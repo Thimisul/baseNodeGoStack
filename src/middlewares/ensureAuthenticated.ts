@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { verify } from 'jsonwebtoken';
+
 import authConfig from '../config/auth';
 
 interface TokenPayload {
@@ -20,7 +21,6 @@ export default function ensureAuthenticated(
   }
 
   const [, token] = authHeader.split(' ');
-
   try {
     const decoded = verify(token, authConfig.jwt.secret);
 
@@ -29,9 +29,8 @@ export default function ensureAuthenticated(
     request.user = {
       id: sub,
     };
-
     return next();
   } catch {
-    throw new Error('JWT token is Invalid');
+    throw new Error('Invalid JWT Token');
   }
 }
